@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoM8 Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-welcome {
+            color: white;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .content-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .assignment-item, .notification-item {
+            padding: 1rem;
+            border-left: 4px solid #667eea;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .assignment-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .assignment-meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1em;
+            transition: transform 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🎓 AutoM8 Dashboard</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="assignments.html" class="nav-link">Assignments</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="grades.html" class="nav-link">Grades</a>
+            <a href="notifications.html" class="nav-link">Notifications</a>
+            <a href="parents.html" class="nav-link">Parents</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <span id="userWelcome" class="user-welcome">Welcome!</span>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2 id="welcomeMessage">Loading...</h2>
+            <p id="roleMessage">Please wait while we load your dashboard</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="loading">Loading statistics...</div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-section">
+                <h3 class="section-title" id="mainSectionTitle">Recent Activity</h3>
+                <div id="mainContent">
+                    <div class="loading">Loading content...</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Notifications</h3>
+                <div id="notificationsContent">
+                    <div class="loading">Loading notifications...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions" id="quickActions">
+            <!-- Quick actions will be loaded based on user role -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+
+        // Check authentication
+        function checkAuth() {
+            authToken = localStorage.getItem('authToken');
+            const userStr = localStorage.getItem('currentUser');
+            
+            if (!authToken || !userStr) {
+                window.location.href = 'index.html';
+                return false;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            return true;
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Make authenticated API call
+        async function apiCall(endpoint, options = {}) {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+                return await response.json();
+            } catch (error) {
+                console.error('API call failed:', error);
+                return { error: 'Network error' };
+            }
+        }
+
+        // Load dashboard stats
+        async function loadStats() {
+            const statsGrid = document.getElementById('statsGrid');
+            
+            try {
+                const stats = await apiCall('/dashboard/stats');
+                
+                if (stats.stats) {
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <div class="icon">👥</div>
+                            <div class="number">${stats.stats.total_students || 0}</div>
+                            <div class="label">Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">👨‍🏫</div>
+                            <div class="number">${stats.stats.total_teachers || 0}</div>
+                            <div class="label">Teachers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">📝</div>
+                            <div class="number">${stats.stats.total_assignments || 0}</div>
+                            <div class="label">Assignments</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">📊</div>
+                            <div class="number">${stats.stats.total_submissions || 0}</div>
+                            <div class="label">Submissions</div>
+                        </div>
+                    `;
+                } else {
+                    statsGrid.innerHTML = '<div class="error">Failed to load statistics</div>';
+                }
+            } catch (error) {
+                statsGrid.innerHTML = '<div class="error">Error loading statistics</div>';
+            }
+        }
+
+        // Load user-specific content
+        async function loadUserContent() {
+            const mainContent = document.getElementById('mainContent');
+            const mainSectionTitle = document.getElementById('mainSectionTitle');
+
+            if (currentUser.role === 'teacher') {
+                mainSectionTitle.textContent = 'My Assignments';
+                
+                try {
+                    const assignments = await apiCall('/dashboard/my-assignments');
+                    
+                    if (assignments.assignments && assignments.assignments.length > 0) {
+                        mainContent.innerHTML = assignments.assignments.map(assignment => `
+                            <div class="assignment-item">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <div class="assignment-meta">
+                                    Due: ${new Date(assignment.due_date).toLocaleDateString()} | 
+                                    Submissions: ${assignment.submission_count || 0}
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        mainContent.innerHTML = '<p>No assignments found. <a href="assignments.html">Create your first assignment</a></p>';
+                    }
+                } catch (error) {
+                    mainContent.innerHTML = '<div class="error">Error loading assignments</div>';
+                }
+            } else if (currentUser.role === 'student') {
+                mainSectionTitle.textContent = 'My Assignments';
+                
+                try {
+                    const assignments = await apiCall('/dashboard/assignments');
+                    
+                    if (assignments.assignments && assignments.assignments.length > 0) {
+                        mainContent.innerHTML = assignments.assignments.map(assignment => `
+                            <div class="assignment-item">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <div class="assignment-meta">
+                                    Due: ${new Date(assignment.due_date).toLocaleDateString()} | 
+                                    Status: ${assignment.submission_id ? 'Submitted' : 'Pending'}
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        mainContent.innerHTML = '<p>No assignments found.</p>';
+                    }
+                } catch (error) {
+                    mainContent.innerHTML = '<div class="error">Error loading assignments</div>';
+                }
+            } else {
+                mainContent.innerHTML = '<p>Welcome to your dashboard!</p>';
+            }
+        }
+
+        // Load notifications
+        async function loadNotifications() {
+            const notificationsContent = document.getElementById('notificationsContent');
+            
+            try {
+                const notifications = await apiCall('/notifications/my-notifications?limit=5');
+                
+                if (notifications.notifications && notifications.notifications.length > 0) {
+                    notificationsContent.innerHTML = notifications.notifications.map(notification => `
+                        <div class="notification-item">
+                            <div class="assignment-title">${notification.title}</div>
+                            <div class="assignment-meta">
+                                ${notification.message.substring(0, 100)}...
+                                <br><small>${new Date(notification.created_at).toLocaleDateString()}</small>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    notificationsContent.innerHTML = '<p>No notifications</p>';
+                }
+            } catch (error) {
+                notificationsContent.innerHTML = '<div class="error">Error loading notifications</div>';
+            }
+        }
+
+        // Setup quick actions based on user role
+        function setupQuickActions() {
+            const quickActions = document.getElementById('quickActions');
+            
+            const actions = {
+                admin: [
+                    { text: '� Manage Classes', href: 'classes.html' },
+                    { text: '� Assignments', href: 'assignments.html' },
+                    { text: '📊 Attendance', href: 'attendance.html' },
+                    { text: '📈 Grades', href: 'grades.html' },
+                    { text: '🔔 Notifications', href: 'notifications.html' },
+                    { text: '⚙️ Profile', href: 'profile.html' }
+                ],
+                teacher: [
+                    { text: '📝 Assignments', href: 'assignments.html' },
+                    { text: '📚 My Classes', href: 'classes.html' },
+                    { text: '📊 Take Attendance', href: 'attendance.html' },
+                    { text: '📈 Grade Book', href: 'grades.html' },
+                    { text: '🔔 Notifications', href: 'notifications.html' },
+                    { text: '⚙️ Profile', href: 'profile.html' }
+                ],
+                student: [
+                    { text: '📝 My Assignments', href: 'assignments.html' },
+                    { text: '📚 My Classes', href: 'classes.html' },
+                    { text: '📊 My Grades', href: 'grades.html' },
+                    { text: '� My Attendance', href: 'attendance.html' },
+                    { text: '�🔔 Notifications', href: 'notifications.html' },
+                    { text: '⚙️ Profile', href: 'profile.html' }
+                ],
+                parent: [
+                    { text: '👨‍👩‍👧‍👦 Parent Portal', href: 'parents.html' },
+                    { text: '📊 Children\'s Grades', href: 'grades.html' },
+                    { text: '📅 Attendance', href: 'attendance.html' },
+                    { text: '🔔 Notifications', href: 'notifications.html' },
+                    { text: '⚙️ Profile', href: 'profile.html' }
+                ]
+            };
+
+            const userActions = actions[currentUser.role] || [];
+            quickActions.innerHTML = userActions.map(action => `
+                <a href="${action.href}" class="action-btn">${action.text}</a>
+            `).join('');
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            if (!checkAuth()) return;
+
+            // Update UI with user info
+            document.getElementById('userWelcome').textContent = `Welcome, ${currentUser.full_name}!`;
+            document.getElementById('welcomeMessage').textContent = `Hello, ${currentUser.full_name}!`;
+            document.getElementById('roleMessage').textContent = `Logged in as ${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)}`;
+
+            // Load dashboard content
+            await loadStats();
+            await loadUserContent();
+            await loadNotifications();
+            setupQuickActions();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initDashboard);
+    </script>
+    
+    <!-- Include school branding configuration -->
+    <script src="/assets/school-config.js"></script>
+</body>
+</html>

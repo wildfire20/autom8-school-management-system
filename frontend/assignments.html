@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoM8 - Assignments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .assignments-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .assignment-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .assignment-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .assignment-meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .assignment-description {
+            color: #555;
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-submitted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-graded {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .close {
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .file-status {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .file-selected {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .navbar .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+                padding: 1rem;
+            }
+            
+            .assignment-card {
+                padding: 1rem;
+            }
+            
+            .assignment-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .assignment-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .file-upload-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .file-upload-wrapper .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar h1 {
+                font-size: 1.4em;
+            }
+            
+            .nav-link {
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+            
+            .assignment-title {
+                font-size: 1.1em;
+            }
+            
+            .modal-content {
+                width: 98%;
+                margin: 1% auto;
+                padding: 0.5rem;
+            }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        .realtime-notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1001;
+            max-width: 350px;
+            font-weight: 500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            border-left: 4px solid #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            animation: slideInRight 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🎓 AutoM8 - Assignments</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="assignments.html" class="nav-link">Assignments</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="grades.html" class="nav-link">Grades</a>
+            <a href="notifications.html" class="nav-link">Notifications</a>
+            <a href="parents.html" class="nav-link">Parents</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <a href="#" class="nav-link" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h2 id="pageTitle">Assignments</h2>
+                <p id="pageSubtitle">Manage your assignments</p>
+            </div>
+            <button class="btn" id="createAssignmentBtn" onclick="openCreateModal()" style="display: none;">
+                📝 Create Assignment
+            </button>
+        </div>
+
+        <div id="assignmentsContainer">
+            <div class="loading">Loading assignments...</div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Assignment</h3>
+                <span class="close" onclick="closeCreateModal()">&times;</span>
+            </div>
+            <form id="createAssignmentForm">
+                <div class="form-group">
+                    <label for="assignmentTitle">Title *</label>
+                    <input type="text" id="assignmentTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDescription">Description *</label>
+                    <textarea id="assignmentDescription" required placeholder="Enter assignment instructions..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDueDate">Due Date *</label>
+                    <input type="datetime-local" id="assignmentDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentMaxScore">Maximum Score</label>
+                    <input type="number" id="assignmentMaxScore" value="100" min="1">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Create Assignment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Submit Assignment Modal -->
+    <div id="submitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit Assignment</h3>
+                <span class="close" onclick="closeSubmitModal()">&times;</span>
+            </div>
+            <form id="submitAssignmentForm">
+                <div class="form-group">
+                    <label for="submissionContent">Your Response *</label>
+                    <textarea id="submissionContent" required placeholder="Enter your assignment response..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="submissionFile">Attach File (Optional)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="submissionFile" accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.png" style="display: none;">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('submissionFile').click()">
+                            📎 Choose File
+                        </button>
+                        <span id="fileStatus" class="file-status">No file selected</span>
+                    </div>
+                    <small style="color: #666; font-size: 0.9em;">
+                        Supported formats: PDF, DOC, DOCX, TXT, ZIP, JPG, PNG (Max 10MB)
+                    </small>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Submit Assignment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSubmitModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Socket.IO for real-time notifications -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+        let assignments = [];
+        let currentAssignmentId = null;
+        let socket = null;
+
+        // Initialize WebSocket connection
+        function initializeSocket() {
+            if (!currentUser) return;
+            
+            socket = io('http://localhost:3000');
+            
+            socket.on('connect', () => {
+                console.log('🔌 Connected to real-time server');
+                // Authenticate the socket connection
+                socket.emit('authenticate', {
+                    userId: currentUser.id,
+                    role: currentUser.role,
+                    schoolId: currentUser.school_id
+                });
+            });
+
+            // Listen for real-time notifications
+            socket.on('notification', (notification) => {
+                console.log('📢 Real-time notification:', notification);
+                handleRealTimeNotification(notification);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('❌ Disconnected from real-time server');
+            });
+        }
+
+        // Handle real-time notifications
+        function handleRealTimeNotification(notification) {
+            // Show notification banner
+            showRealtimeAlert(notification.title, notification.message, notification.type);
+            
+            // Handle specific notification types
+            switch(notification.type) {
+                case 'assignment_submitted':
+                    if (currentUser.role === 'teacher') {
+                        // Refresh assignments to show new submission count
+                        loadAssignments();
+                    }
+                    break;
+                case 'assignment_graded':
+                    if (currentUser.role === 'student') {
+                        // Refresh assignments to show new grade
+                        loadAssignments();
+                    }
+                    break;
+            }
+        }
+
+        // Show real-time alert with special styling
+        function showRealtimeAlert(title, message, type) {
+            const alert = document.createElement('div');
+            alert.className = `realtime-notification ${type}`;
+            alert.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1001;
+                max-width: 350px;
+                font-weight: 500;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+                border-left: 4px solid #667eea;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            alert.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">🔔 ${title}</div>
+                <div style="font-size: 0.9em; opacity: 0.9;">${message}</div>
+                <div style="text-align: right; margin-top: 8px;">
+                    <span style="font-size: 0.8em; opacity: 0.7;">Just now</span>
+                </div>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            // Auto remove after 6 seconds with fade out
+            setTimeout(() => {
+                alert.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 300);
+            }, 6000);
+        }
+
+        // Check authentication
+        function checkAuth() {
+            authToken = localStorage.getItem('authToken');
+            const userStr = localStorage.getItem('currentUser');
+            
+            if (!authToken || !userStr) {
+                window.location.href = 'index.html';
+                return false;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            return true;
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Make authenticated API call
+        async function apiCall(endpoint, options = {}) {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+                const data = await response.json();
+                return { ...data, status: response.status };
+            } catch (error) {
+                console.error('API call failed:', error);
+                return { error: 'Network error' };
+            }
+        }
+
+        // Load assignments based on user role
+        async function loadAssignments() {
+            const container = document.getElementById('assignmentsContainer');
+            container.innerHTML = '<div class="loading">📚 Loading assignments...</div>';
+            
+            try {
+                let data;
+                if (currentUser.role === 'teacher') {
+                    data = await apiCall('/dashboard/my-assignments');
+                    assignments = data.assignments || [];
+                } else if (currentUser.role === 'student') {
+                    data = await apiCall('/dashboard/assignments');
+                    assignments = data.assignments || [];
+                }
+
+                // Add a small delay to show loading state
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                if (assignments.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📝 No assignments found</h3>
+                            <p>${currentUser.role === 'teacher' ? 'Create your first assignment to get started!' : 'No assignments have been posted yet.'}</p>
+                            ${currentUser.role === 'teacher' ? '<button class="btn" onclick="openCreateModal()" style="margin-top: 1rem;">📝 Create First Assignment</button>' : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="assignments-grid">
+                        ${assignments.map(assignment => createAssignmentCard(assignment)).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Error loading assignments</h4>
+                        <p>There was a problem loading your assignments. Please try again.</p>
+                        <button class="btn" onclick="loadAssignments()" style="margin-top: 1rem;">🔄 Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Create assignment card HTML
+        function createAssignmentCard(assignment) {
+            const dueDate = new Date(assignment.due_date);
+            const isOverdue = dueDate < new Date();
+            
+            let statusBadge = '';
+            let actions = '';
+
+            if (currentUser.role === 'student') {
+                if (assignment.submission_id) {
+                    statusBadge = '<span class="status-badge status-submitted">Submitted</span>';
+                } else {
+                    statusBadge = `<span class="status-badge status-pending">${isOverdue ? 'Overdue' : 'Pending'}</span>`;
+                    actions = `<button class="btn" onclick="openSubmitModal(${assignment.id})">Submit Assignment</button>`;
+                }
+            } else if (currentUser.role === 'teacher') {
+                statusBadge = `<span class="status-badge status-submitted">${assignment.submission_count || 0} Submissions</span>`;
+                actions = `<button class="btn" onclick="viewSubmissions(${assignment.id})">View Submissions</button>`;
+            }
+
+            return `
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <div>
+                            <div class="assignment-title">${assignment.title}</div>
+                            <div class="assignment-meta">
+                                Due: ${dueDate.toLocaleDateString()} at ${dueDate.toLocaleTimeString()} | 
+                                Max Score: ${assignment.max_score || 100}
+                            </div>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    <div class="assignment-description">
+                        ${assignment.description}
+                    </div>
+                    <div class="assignment-actions">
+                        ${actions}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'block';
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').style.display = 'none';
+            document.getElementById('createAssignmentForm').reset();
+        }
+
+        function openSubmitModal(assignmentId) {
+            currentAssignmentId = assignmentId;
+            document.getElementById('submitModal').style.display = 'block';
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').style.display = 'none';
+            document.getElementById('submitAssignmentForm').reset();
+            currentAssignmentId = null;
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Create alert element
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+                max-width: 400px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            // Set colors based on type
+            if (type === 'success') {
+                alert.style.background = '#d4edda';
+                alert.style.color = '#155724';
+                alert.style.border = '1px solid #c3e6cb';
+            } else if (type === 'error') {
+                alert.style.background = '#f8d7da';
+                alert.style.color = '#721c24';
+                alert.style.border = '1px solid #f5c6cb';
+            } else {
+                alert.style.background = '#d1ecf1';
+                alert.style.color = '#0c5460';
+                alert.style.border = '1px solid #bee5eb';
+            }
+            
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        // Create assignment
+        document.getElementById('createAssignmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const assignmentData = {
+                title: document.getElementById('assignmentTitle').value,
+                description: document.getElementById('assignmentDescription').value,
+                due_date: document.getElementById('assignmentDueDate').value,
+                max_score: parseInt(document.getElementById('assignmentMaxScore').value)
+            };
+
+            const result = await apiCall('/assignments', {
+                method: 'POST',
+                body: JSON.stringify(assignmentData)
+            });
+
+            if (result.assignment) {
+                closeCreateModal();
+                loadAssignments(); // Reload assignments
+                showAlert('Assignment created successfully!', 'success');
+            } else {
+                showAlert('Error creating assignment: ' + (result.error || 'Unknown error'), 'error');
+            }
+        });
+
+        // Submit assignment
+        document.getElementById('submitAssignmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const content = document.getElementById('submissionContent').value;
+            const fileInput = document.getElementById('submissionFile');
+            const file = fileInput.files[0];
+
+            // Create FormData for file upload support
+            const formData = new FormData();
+            formData.append('content', content);
+            
+            if (file) {
+                formData.append('file', file);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/assignments/${currentAssignmentId}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                        // Note: Don't set Content-Type for FormData, let browser set it
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.submission) {
+                    closeSubmitModal();
+                    loadAssignments(); // Reload assignments
+                    showAlert('Assignment submitted successfully!', 'success');
+                } else {
+                    showAlert('Error submitting assignment: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                showAlert('Network error while submitting assignment', 'error');
+            }
+        });
+
+        // View submissions (for teachers)
+        async function viewSubmissions(assignmentId) {
+            try {
+                const result = await apiCall(`/assignments/${assignmentId}/submissions`);
+                if (result.submissions) {
+                    showSubmissionsModal(result.submissions, assignmentId);
+                } else {
+                    showAlert('Error loading submissions: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Network error while loading submissions', 'error');
+            }
+        }
+
+        // Show submissions modal
+        function showSubmissionsModal(submissions, assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            const assignmentTitle = assignment ? assignment.title : 'Assignment';
+            
+            const modalHtml = `
+                <div id="submissionsModal" class="modal" style="display: block;">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <div class="modal-header">
+                            <h3>📋 Submissions for "${assignmentTitle}"</h3>
+                            <span class="close" onclick="closeSubmissionsModal()">&times;</span>
+                        </div>
+                        <div class="submissions-container">
+                            ${submissions.length === 0 ? 
+                                '<div class="empty-state"><h4>No submissions yet</h4><p>Students haven\'t submitted their work yet.</p></div>' :
+                                submissions.map(submission => createSubmissionCard(submission)).join('')
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        // Create submission card
+        function createSubmissionCard(submission) {
+            const submittedDate = new Date(submission.submitted_at);
+            const hasFile = submission.file_path ? true : false;
+            
+            return `
+                <div class="submission-card" style="background: white; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid #eee;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="margin: 0 0 0.5rem 0; color: #333;">👤 ${submission.student_name || 'Student'}</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9em;">
+                                Submitted: ${submittedDate.toLocaleDateString()} at ${submittedDate.toLocaleTimeString()}
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            ${submission.score !== null ? 
+                                `<span class="status-badge status-graded">Graded: ${submission.score}/${submission.max_score || 100}</span>` :
+                                `<button class="btn" onclick="gradeSubmission(${submission.id}, ${submission.assignment_id})" style="padding: 5px 10px; font-size: 0.9em;">Grade</button>`
+                            }
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Response:</strong>
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-top: 0.5rem; white-space: pre-wrap;">
+                            ${submission.content || 'No text response provided.'}
+                        </div>
+                    </div>
+                    ${hasFile ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>📎 File Attachment:</strong>
+                            <div style="margin-top: 0.5rem;">
+                                <a href="/uploads/${submission.file_path}" target="_blank" style="color: #667eea; text-decoration: none;">
+                                    📄 ${submission.file_path.split('/').pop()}
+                                </a>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Close submissions modal
+        function closeSubmissionsModal() {
+            const modal = document.getElementById('submissionsModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Grade submission function
+        async function gradeSubmission(submissionId, assignmentId) {
+            const grade = prompt('Enter grade (0-100):');
+            if (grade === null) return; // User cancelled
+            
+            const numericGrade = parseInt(grade);
+            if (isNaN(numericGrade) || numericGrade < 0 || numericGrade > 100) {
+                showAlert('Please enter a valid grade between 0 and 100', 'error');
+                return;
+            }
+            
+            const feedback = prompt('Enter feedback (optional):') || '';
+            
+            try {
+                const result = await apiCall(`/assignments/submissions/${submissionId}/grade`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        score: numericGrade,
+                        feedback: feedback
+                    })
+                });
+                
+                if (result.message && result.message.includes('successfully')) {
+                    showAlert('Grade submitted successfully!', 'success');
+                    // Refresh the submissions modal
+                    closeSubmissionsModal();
+                    viewSubmissions(assignmentId);
+                } else {
+                    showAlert('Error submitting grade: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Network error while submitting grade', 'error');
+            }
+        }
+
+        // Initialize page
+        async function initPage() {
+            if (!checkAuth()) return;
+
+            // Update UI based on user role
+            if (currentUser.role === 'teacher') {
+                document.getElementById('pageSubtitle').textContent = 'Create and manage assignments for your classes';
+                document.getElementById('createAssignmentBtn').style.display = 'block';
+            } else if (currentUser.role === 'student') {
+                document.getElementById('pageSubtitle').textContent = 'View and submit your assignments';
+            }
+
+            await loadAssignments();
+            initializeSocket(); // Initialize WebSocket connection
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const createModal = document.getElementById('createModal');
+            const submitModal = document.getElementById('submitModal');
+            
+            if (event.target === createModal) {
+                closeCreateModal();
+            }
+            if (event.target === submitModal) {
+                closeSubmitModal();
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initPage);
+
+        // Handle file selection feedback
+        document.getElementById('submissionFile').addEventListener('change', function(e) {
+            const fileStatus = document.getElementById('fileStatus');
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Check file size (10MB limit)
+                const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+                if (file.size > maxSize) {
+                    showAlert('File size must be less than 10MB', 'error');
+                    e.target.value = ''; // Clear the file input
+                    fileStatus.textContent = 'No file selected';
+                    fileStatus.classList.remove('file-selected');
+                    return;
+                }
+                
+                fileStatus.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                fileStatus.classList.add('file-selected');
+            } else {
+                fileStatus.textContent = 'No file selected';
+                fileStatus.classList.remove('file-selected');
+            }
+        });
+    </script>
+    
+    <!-- Include school branding configuration -->
+    <script src="/assets/school-config.js"></script>
+</body>
+</html>

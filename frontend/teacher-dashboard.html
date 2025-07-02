@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - AutoM8 School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-text {
+            color: #667eea;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .teacher-info {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(45deg, #5a67d8, #6b5b95);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1em;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .class-item, .assignment-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .class-item:hover, .assignment-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .class-title, .assignment-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .class-meta, .assignment-meta {
+            color: #666;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .due-soon {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .submission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9ff;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+
+        .pending-grade {
+            background: #fff8e1;
+            color: #ff8f00;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc3545;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: -10px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu, .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+    <div class="container">
+        <div class="header">
+            <div class="welcome-text">Welcome Back, <span id="teacherName">Teacher</span>!</div>
+            <div class="teacher-info">
+                <span id="schoolName">Loading...</span> • 
+                <span id="teacherSubject">Subject Teacher</span>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <a href="assignments.html" class="nav-btn">📚 Assignments</a>
+            <a href="grades.html" class="nav-btn">📊 Gradebook</a>
+            <a href="attendance.html" class="nav-btn">📅 Attendance</a>
+            <a href="classes.html" class="nav-btn">🏫 My Classes</a>
+            <a href="notifications.html" class="nav-btn">🔔 Notifications</a>
+            <a href="profile.html" class="nav-btn">👤 Profile</a>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn" onclick="openCreateAssignmentModal()">
+                ➕ Create Assignment
+            </button>
+            <button class="action-btn" onclick="openCreateClassModal()">
+                🏫 Create Class
+            </button>
+            <button class="action-btn" onclick="window.location.href='admin-enhanced.html'">
+                ⚙️ Admin Panel
+            </button>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Teaching Overview -->
+            <div class="card">
+                <h3>📊 Teaching Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalClasses">-</div>
+                        <div class="stat-label">My Classes</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalStudents">-</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="activeAssignments">-</div>
+                        <div class="stat-label">Active Assignments</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="pendingGrades">-</div>
+                        <div class="stat-label">Pending Grades</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Classes -->
+            <div class="card">
+                <h3>🏫 My Classes</h3>
+                <div id="myClasses" class="loading">Loading classes...</div>
+            </div>
+
+            <!-- Recent Assignments -->
+            <div class="card">
+                <h3>📝 Recent Assignments</h3>
+                <div id="recentAssignments" class="loading">Loading assignments...</div>
+            </div>
+
+            <!-- Pending Submissions -->
+            <div class="card">
+                <h3>⏳ Pending Submissions</h3>
+                <div id="pendingSubmissions" class="loading">Loading submissions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal -->
+    <div id="createAssignmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateAssignmentModal()">&times;</span>
+            <h2>📝 Create New Assignment</h2>
+            <form id="createAssignmentForm">
+                <div class="form-group">
+                    <label for="assignmentTitle">Title</label>
+                    <input type="text" id="assignmentTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentClass">Class</label>
+                    <select id="assignmentClass" required>
+                        <option value="">Select a class...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDescription">Description</label>
+                    <textarea id="assignmentDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDueDate">Due Date</label>
+                    <input type="datetime-local" id="assignmentDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentMaxScore">Max Score</label>
+                    <input type="number" id="assignmentMaxScore" min="1" max="1000" value="100" required>
+                </div>
+                <button type="submit" class="btn-primary">Create Assignment</button>
+                <button type="button" class="btn-secondary" onclick="closeCreateAssignmentModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Class Modal -->
+    <div id="createClassModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateClassModal()">&times;</span>
+            <h2>🏫 Create New Class</h2>
+            <form id="createClassForm">
+                <div class="form-group">
+                    <label for="className">Class Name</label>
+                    <input type="text" id="className" required>
+                </div>
+                <div class="form-group">
+                    <label for="classSubject">Subject</label>
+                    <input type="text" id="classSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="classGrade">Grade Level</label>
+                    <select id="classGrade" required>
+                        <option value="">Select grade...</option>
+                        <option value="K">Kindergarten</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="classDescription">Description</label>
+                    <textarea id="classDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Create Class</button>
+                <button type="button" class="btn-secondary" onclick="closeCreateClassModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let token = null;
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Check authentication and load user data
+        function checkAuth() {
+            token = localStorage.getItem('authToken') || localStorage.getItem('token');
+            const userString = localStorage.getItem('currentUser') || localStorage.getItem('user');
+            
+            if (!token || !userString) {
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            try {
+                currentUser = JSON.parse(userString);
+                
+                // Verify this is a teacher or admin
+                if (!['teacher', 'admin'].includes(currentUser.role)) {
+                    alert('Access denied. This page is for teachers only.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'index.html';
+                return false;
+            }
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            if (!checkAuth()) return;
+
+            // Update user info in header
+            document.getElementById('teacherName').textContent = currentUser.full_name || 'Teacher';
+            document.getElementById('teacherSubject').textContent = currentUser.subject_specialization || 'Subject Teacher';
+
+            // Hide admin panel button if not admin
+            if (currentUser.role !== 'admin') {
+                const adminBtn = document.querySelector('button[onclick*="admin-enhanced.html"]');
+                if (adminBtn) adminBtn.style.display = 'none';
+            }
+
+            // Load school info
+            await loadSchoolInfo();
+
+            // Load dashboard data
+            await Promise.all([
+                loadTeachingOverview(),
+                loadMyClasses(),
+                loadRecentAssignments(),
+                loadPendingSubmissions()
+            ]);
+
+            // Load classes for assignment creation
+            await loadClassesForModal();
+        }
+
+        // Load school information
+        async function loadSchoolInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/school/${currentUser.school_domain || 'default'}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('schoolName').textContent = data.school?.name || 'AutoM8 School';
+                }
+            } catch (error) {
+                console.error('Error loading school info:', error);
+                document.getElementById('schoolName').textContent = 'AutoM8 School';
+            }
+        }
+
+        // Load teaching overview stats
+        async function loadTeachingOverview() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update stats with actual data or placeholders
+                    document.getElementById('totalClasses').textContent = '5'; // Placeholder
+                    document.getElementById('totalStudents').textContent = '127'; // Placeholder
+                    document.getElementById('activeAssignments').textContent = '8'; // Placeholder
+                    document.getElementById('pendingGrades').textContent = '23'; // Placeholder
+                }
+            } catch (error) {
+                console.error('Error loading teaching overview:', error);
+                // Set default values
+                document.getElementById('totalClasses').textContent = '-';
+                document.getElementById('totalStudents').textContent = '-';
+                document.getElementById('activeAssignments').textContent = '-';
+                document.getElementById('pendingGrades').textContent = '-';
+            }
+        }
+
+        // Load teacher's classes
+        async function loadMyClasses() {
+            try {
+                const response = await fetch(`${API_BASE}/classes?teacher_id=${currentUser.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('myClasses');
+                    
+                    if (data.classes && data.classes.length > 0) {
+                        container.innerHTML = data.classes.map(classItem => `
+                            <div class="class-item" onclick="window.location.href='classes.html?id=${classItem.id}'">
+                                <div class="class-title">${classItem.name}</div>
+                                <div class="class-meta">
+                                    <span>${classItem.subject} • Grade ${classItem.grade_level}</span>
+                                    <span class="student-count">${classItem.enrolled_students || 0} students</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No classes assigned</p>';
+                    }
+                } else {
+                    throw new Error('Failed to load classes');
+                }
+            } catch (error) {
+                console.error('Error loading classes:', error);
+                document.getElementById('myClasses').innerHTML = 
+                    '<div class="error">Failed to load classes</div>';
+            }
+        }
+
+        // Load recent assignments
+        async function loadRecentAssignments() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/my-assignments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('recentAssignments');
+                    
+                    if (data.assignments && data.assignments.length > 0) {
+                        container.innerHTML = data.assignments.slice(0, 5).map(assignment => `
+                            <div class="assignment-item" onclick="window.location.href='assignments.html?id=${assignment.id}'">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <div class="assignment-meta">
+                                    <span>${formatDate(assignment.created_at)}</span>
+                                    <span class="due-soon">Due: ${formatDate(assignment.due_date)}</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No recent assignments</p>';
+                    }
+                } else {
+                    throw new Error('Failed to load assignments');
+                }
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                document.getElementById('recentAssignments').innerHTML = 
+                    '<div class="error">Failed to load assignments</div>';
+            }
+        }
+
+        // Load pending submissions
+        async function loadPendingSubmissions() {
+            try {
+                // This would need to be implemented in the backend
+                const container = document.getElementById('pendingSubmissions');
+                container.innerHTML = '<p style="text-align: center; color: #666;">No pending submissions</p>';
+            } catch (error) {
+                console.error('Error loading pending submissions:', error);
+                document.getElementById('pendingSubmissions').innerHTML = 
+                    '<div class="error">Failed to load pending submissions</div>';
+            }
+        }
+
+        // Load classes for assignment modal
+        async function loadClassesForModal() {
+            try {
+                const response = await fetch(`${API_BASE}/classes?teacher_id=${currentUser.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const select = document.getElementById('assignmentClass');
+                    
+                    if (data.classes && data.classes.length > 0) {
+                        select.innerHTML = '<option value="">Select a class...</option>' + 
+                            data.classes.map(classItem => 
+                                `<option value="${classItem.id}">${classItem.name} (${classItem.subject})</option>`
+                            ).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading classes for modal:', error);
+            }
+        }
+
+        // Modal functions
+        function openCreateAssignmentModal() {
+            document.getElementById('createAssignmentModal').style.display = 'block';
+            // Set default due date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 7);
+            document.getElementById('assignmentDueDate').value = tomorrow.toISOString().slice(0, 16);
+        }
+
+        function closeCreateAssignmentModal() {
+            document.getElementById('createAssignmentModal').style.display = 'none';
+            document.getElementById('createAssignmentForm').reset();
+        }
+
+        function openCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'block';
+        }
+
+        function closeCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'none';
+            document.getElementById('createClassForm').reset();
+        }
+
+        // Form submission handlers
+        document.getElementById('createAssignmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('assignmentTitle').value,
+                class_id: document.getElementById('assignmentClass').value,
+                description: document.getElementById('assignmentDescription').value,
+                due_date: document.getElementById('assignmentDueDate').value,
+                max_score: parseInt(document.getElementById('assignmentMaxScore').value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/assignments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Assignment created successfully!');
+                    closeCreateAssignmentModal();
+                    loadRecentAssignments(); // Refresh the list
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.error || 'Failed to create assignment'));
+                }
+            } catch (error) {
+                console.error('Error creating assignment:', error);
+                alert('Network error occurred');
+            }
+        });
+
+        document.getElementById('createClassForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('className').value,
+                subject: document.getElementById('classSubject').value,
+                grade_level: document.getElementById('classGrade').value,
+                description: document.getElementById('classDescription').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/classes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Class created successfully!');
+                    closeCreateClassModal();
+                    loadMyClasses(); // Refresh the list
+                    loadClassesForModal(); // Refresh modal dropdown
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.error || 'Failed to create class'));
+                }
+            } catch (error) {
+                console.error('Error creating class:', error);
+                alert('Network error occurred');
+            }
+        });
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'No date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('token');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const assignmentModal = document.getElementById('createAssignmentModal');
+            const classModal = document.getElementById('createClassModal');
+            
+            if (event.target == assignmentModal) {
+                closeCreateAssignmentModal();
+            }
+            if (event.target == classModal) {
+                closeCreateClassModal();
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

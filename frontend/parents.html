@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal - AutoM8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-welcome {
+            color: white;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            border: 1px solid #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .child-selector {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .navigation {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🏫 AutoM8 - Parent Portal</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="assignments.html" class="nav-link">Assignments</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="grades.html" class="nav-link">Grades</a>
+            <a href="notifications.html" class="nav-link">Notifications</a>
+            <a href="parents.html" class="nav-link">Parents</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <span id="userName" class="user-welcome">Loading...</span>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>👨‍👩‍👧‍👦 Parent Portal</h2>
+            <p>Monitor your child's academic progress and school activities</p>
+        </div>
+
+        <div class="child-selector">
+            <div class="form-group">
+                <label for="childSelect">Select Child:</label>
+                <select id="childSelect" onchange="loadChildData()">
+                    <option value="">Select a child...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="childDataContainer" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon">📚</div>
+                    <div class="number" id="totalAssignments">0</div>
+                    <div class="label">Total Assignments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">✅</div>
+                    <div class="number" id="completedAssignments">0</div>
+                    <div class="label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📊</div>
+                    <div class="number" id="averageGrade">0%</div>
+                    <div class="label">Average Grade</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📅</div>
+                    <div class="number" id="attendanceRate">0%</div>
+                    <div class="label">Attendance Rate</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Recent Grades</h2>
+                <div id="gradesTable">
+                    <div class="loading">Loading grades...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Recent Assignments</h2>
+                <div id="assignmentsTable">
+                    <div class="loading">Loading assignments...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📅 Attendance Summary</h2>
+                <div id="attendanceTable">
+                    <div class="loading">Loading attendance...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let selectedChildId = null;
+
+        // Get authentication token
+        function getAuthToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getAuthToken();
+            if (!token) {
+                window.location.href = '/';
+                return false;
+            }
+            return true;
+        }
+
+        // Load current user info
+        async function loadUserInfo() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    currentUser = await response.json();
+                    document.getElementById('userName').textContent = currentUser.name;
+                    
+                    // Only show parent portal if user is a parent
+                    if (currentUser.role !== 'parent') {
+                        alert('Access denied. This page is only for parents.');
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                    
+                    await loadChildren();
+                } else {
+                    throw new Error('Failed to load user info');
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
+            }
+        }
+
+        // Load children for the parent
+        async function loadChildren() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/parents/children', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const children = await response.json();
+                    const select = document.getElementById('childSelect');
+                    
+                    select.innerHTML = '<option value="">Select a child...</option>';
+                    
+                    children.forEach(child => {
+                        const option = document.createElement('option');
+                        option.value = child.id;
+                        option.textContent = `${child.name} - ${child.class_name}`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    throw new Error('Failed to load children');
+                }
+            } catch (error) {
+                console.error('Error loading children:', error);
+                alert('Error loading children data');
+            }
+        }
+
+        // Load data for selected child
+        async function loadChildData() {
+            const childId = document.getElementById('childSelect').value;
+            if (!childId) {
+                document.getElementById('childDataContainer').style.display = 'none';
+                return;
+            }
+
+            selectedChildId = childId;
+            document.getElementById('childDataContainer').style.display = 'block';
+
+            // Load all child data
+            await Promise.all([
+                loadChildStats(),
+                loadChildGrades(),
+                loadChildAssignments(),
+                loadChildAttendance()
+            ]);
+        }
+
+        // Load child statistics
+        async function loadChildStats() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch(`/api/parents/child/${selectedChildId}/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('totalAssignments').textContent = stats.totalAssignments || 0;
+                    document.getElementById('completedAssignments').textContent = stats.completedAssignments || 0;
+                    document.getElementById('averageGrade').textContent = `${stats.averageGrade || 0}%`;
+                    document.getElementById('attendanceRate').textContent = `${stats.attendanceRate || 0}%`;
+                }
+            } catch (error) {
+                console.error('Error loading child stats:', error);
+            }
+        }
+
+        // Load child grades
+        async function loadChildGrades() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch(`/api/parents/child/${selectedChildId}/grades`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const grades = await response.json();
+                    const container = document.getElementById('gradesTable');
+                    
+                    if (grades.length === 0) {
+                        container.innerHTML = '<div class="no-data">No grades available</div>';
+                        return;
+                    }
+
+                    let html = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Assignment</th>
+                                    <th>Grade</th>
+                                    <th>Date</th>
+                                    <th>Feedback</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    grades.forEach(grade => {
+                        const gradeClass = grade.score >= 80 ? 'badge-success' : 
+                                         grade.score >= 60 ? 'badge-warning' : 'badge-danger';
+                        
+                        html += `
+                            <tr>
+                                <td>${grade.subject || 'N/A'}</td>
+                                <td>${grade.assignment_title}</td>
+                                <td><span class="badge ${gradeClass}">${grade.score}%</span></td>
+                                <td>${new Date(grade.created_at).toLocaleDateString()}</td>
+                                <td>${grade.feedback || 'No feedback'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                } else {
+                    throw new Error('Failed to load grades');
+                }
+            } catch (error) {
+                console.error('Error loading grades:', error);
+                document.getElementById('gradesTable').innerHTML = '<div class="no-data">Error loading grades</div>';
+            }
+        }
+
+        // Load child assignments
+        async function loadChildAssignments() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch(`/api/parents/child/${selectedChildId}/assignments`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const assignments = await response.json();
+                    const container = document.getElementById('assignmentsTable');
+                    
+                    if (assignments.length === 0) {
+                        container.innerHTML = '<div class="no-data">No assignments available</div>';
+                        return;
+                    }
+
+                    let html = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Subject</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    assignments.forEach(assignment => {
+                        const dueDate = new Date(assignment.due_date);
+                        const isOverdue = dueDate < new Date() && !assignment.submitted;
+                        const statusClass = assignment.submitted ? 'badge-success' : 
+                                          isOverdue ? 'badge-danger' : 'badge-warning';
+                        const statusText = assignment.submitted ? 'Submitted' : 
+                                         isOverdue ? 'Overdue' : 'Pending';
+                        
+                        html += `
+                            <tr>
+                                <td>${assignment.title}</td>
+                                <td>${assignment.subject || 'N/A'}</td>
+                                <td>${dueDate.toLocaleDateString()}</td>
+                                <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            </tr>
+                        `;
+                    });
+
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                } else {
+                    throw new Error('Failed to load assignments');
+                }
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                document.getElementById('assignmentsTable').innerHTML = '<div class="no-data">Error loading assignments</div>';
+            }
+        }
+
+        // Load child attendance
+        async function loadChildAttendance() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch(`/api/parents/child/${selectedChildId}/attendance`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const attendance = await response.json();
+                    const container = document.getElementById('attendanceTable');
+                    
+                    if (attendance.length === 0) {
+                        container.innerHTML = '<div class="no-data">No attendance records available</div>';
+                        return;
+                    }
+
+                    let html = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    attendance.forEach(record => {
+                        const statusClass = record.status === 'present' ? 'badge-success' : 
+                                          record.status === 'late' ? 'badge-warning' : 'badge-danger';
+                        
+                        html += `
+                            <tr>
+                                <td>${new Date(record.date).toLocaleDateString()}</td>
+                                <td><span class="badge ${statusClass}">${record.status.charAt(0).toUpperCase() + record.status.slice(1)}</span></td>
+                                <td>${record.notes || 'No notes'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                } else {
+                    throw new Error('Failed to load attendance');
+                }
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                document.getElementById('attendanceTable').innerHTML = '<div class="no-data">Error loading attendance</div>';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                loadUserInfo();
+            }
+        });
+    </script>
+
+    <!-- Include school branding configuration -->
+    <script src="/assets/school-config.js"></script>
+</body>
+</html>

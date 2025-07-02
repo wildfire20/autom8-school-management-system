@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AutoM8 School Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            margin: 0.25rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .student-number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .student-number-card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+
+        .student-number-card.assigned {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .student-number-card.inactive {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            opacity: 0.7;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .search-bar {
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Admin Panel</h1>
+        <div class="user-info">
+            <span id="adminName">Admin User</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alerts"></div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showTab('users')">Users</button>
+            <button class="nav-tab" onclick="showTab('student-numbers')">Student Numbers</button>
+            <button class="nav-tab" onclick="showTab('reports')">Reports</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <h2>Dashboard Overview</h2>
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be loaded here -->
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h3>Quick Actions</h3>
+                <button class="btn" onclick="showModal('createUserModal')">Create New User</button>
+                <button class="btn btn-success" onclick="showModal('generateStudentNumbersModal')">Generate Student Numbers</button>
+                <button class="btn btn-secondary" onclick="exportUsers()">Export Users</button>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-tab" class="tab-content">
+            <h2>User Management</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
+            </div>
+            
+            <button class="btn" onclick="showModal('createUserModal')">Add New User</button>
+            
+            <div id="usersTable">
+                <div class="loading">Loading users...</div>
+            </div>
+        </div>
+
+        <!-- Student Numbers Tab -->
+        <div id="student-numbers-tab" class="tab-content">
+            <h2>Student Number Management</h2>
+            
+            <div style="margin-bottom: 1rem;">
+                <button class="btn btn-success" onclick="showModal('generateStudentNumbersModal')">Generate Numbers</button>
+                <button class="btn" onclick="showModal('importStudentNumbersModal')">Import from CSV</button>
+                <button class="btn btn-secondary" onclick="exportStudentNumbers()">Export</button>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="studentNumberSearch" placeholder="Search student numbers..." onkeyup="filterStudentNumbers()">
+            </div>
+            
+            <div id="studentNumbersGrid">
+                <div class="loading">Loading student numbers...</div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports-tab" class="tab-content">
+            <h2>Reports & Analytics</h2>
+            <p>Advanced reporting features coming soon...</p>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New User</h3>
+                <span class="close" onclick="hideModal('createUserModal')">&times;</span>
+            </div>
+            <form id="createUserForm">
+                <div class="form-group">
+                    <label for="userFullName">Full Name</label>
+                    <input type="text" id="userFullName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userRole">Role</label>
+                        <select id="userRole" required onchange="handleUserRoleChange()">
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="parent">Parent</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="userEmailGroup">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" required>
+                </div>
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('createUserModal')">Cancel</button>
+                    <button type="submit" class="btn">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Student Numbers Modal -->
+    <div id="generateStudentNumbersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Generate Student Numbers</h3>
+                <span class="close" onclick="hideModal('generateStudentNumbersModal')">&times;</span>
+            </div>
+            <form id="generateStudentNumbersForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gradeLevel">Grade Level</label>
+                        <select id="gradeLevel" required>
+                            <option value="">Select Grade</option>
+                            <option value="K">Kindergarten</option>
+                            <option value="1">Grade 1</option>
+                            <option value="2">Grade 2</option>
+                            <option value="3">Grade 3</option>
+                            <option value="4">Grade 4</option>
+                            <option value="5">Grade 5</option>
+                            <option value="6">Grade 6</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section">Section</label>
+                        <input type="text" id="section" required placeholder="e.g., A, B, C">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numberCount">Count</label>
+                        <input type="number" id="numberCount" required min="1" max="100" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="numberPrefix">Prefix (optional)</label>
+                        <input type="text" id="numberPrefix" placeholder="STU" maxlength="5">
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('generateStudentNumbersModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Student Numbers Modal -->
+    <div id="importStudentNumbersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Student Numbers</h3>
+                <span class="close" onclick="hideModal('importStudentNumbersModal')">&times;</span>
+            </div>
+            <form id="importStudentNumbersForm">
+                <div class="form-group">
+                    <label for="csvData">CSV Data</label>
+                    <textarea id="csvData" rows="10" placeholder="student_number,grade_level,section
+STU2401A001,1,A
+STU2401A002,1,A
+STU2401B001,1,B"></textarea>
+                    <small>Format: student_number,grade_level,section (one per line)</small>
+                </div>
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('importStudentNumbersModal')">Cancel</button>
+                    <button type="submit" class="btn">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+        let allUsers = [];
+        let allStudentNumbers = [];
+
+        // Initialize the admin panel
+        window.addEventListener('load', async () => {
+            // Check authentication
+            authToken = localStorage.getItem('authToken');
+            const userData = localStorage.getItem('currentUser');
+            
+            if (!authToken || !userData) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userData);
+            
+            if (currentUser.role !== 'admin') {
+                showAlert('Access denied. Admin role required.', 'error');
+                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                return;
+            }
+            
+            document.getElementById('adminName').textContent = currentUser.full_name;
+            
+            // Load initial data
+            await loadDashboardStats();
+            await loadUsers();
+            await loadStudentNumbers();
+        });
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Modal management
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Alert system
+        function showAlert(message, type = 'success') {
+            const alertsDiv = document.getElementById('alerts');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertsDiv.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // API request helper
+        async function apiRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'API request failed');
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                showAlert(error.message, 'error');
+                throw error;
+            }
+        }
+
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const data = await apiRequest('/admin/dashboard/admin-stats');
+                const stats = data.stats;
+                
+                const statsHtml = `
+                    <div class="stat-card">
+                        <h3>${stats.total_users}</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.total_students}</h3>
+                        <p>Students</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.total_teachers}</h3>
+                        <p>Teachers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.total_assignments}</h3>
+                        <p>Assignments</p>
+                    </div>
+                `;
+                
+                document.getElementById('statsGrid').innerHTML = statsHtml;
+            } catch (error) {
+                document.getElementById('statsGrid').innerHTML = '<p>Error loading statistics</p>';
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const data = await apiRequest('/admin/users');
+                allUsers = data.users;
+                displayUsers(allUsers);
+            } catch (error) {
+                document.getElementById('usersTable').innerHTML = '<p>Error loading users</p>';
+            }
+        }
+
+        // Display users table
+        function displayUsers(users) {
+            const tableHtml = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email/Student #</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>${user.full_name}</td>
+                                <td>${user.email || user.student_number || 'N/A'}</td>
+                                <td><span class="badge">${user.role}</span></td>
+                                <td>${user.is_active ? 'Active' : 'Inactive'}</td>
+                                <td>
+                                    <button class="btn btn-sm" onclick="editUser(${user.id})">Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('usersTable').innerHTML = tableHtml;
+        }
+
+        // Filter users
+        function filterUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const filteredUsers = allUsers.filter(user => 
+                user.full_name.toLowerCase().includes(searchTerm) ||
+                (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                (user.student_number && user.student_number.toLowerCase().includes(searchTerm)) ||
+                user.role.toLowerCase().includes(searchTerm)
+            );
+            displayUsers(filteredUsers);
+        }
+
+        // Load student numbers
+        async function loadStudentNumbers() {
+            try {
+                const data = await apiRequest('/admin/student-numbers');
+                allStudentNumbers = data.student_numbers;
+                displayStudentNumbers(allStudentNumbers);
+            } catch (error) {
+                document.getElementById('studentNumbersGrid').innerHTML = '<p>Error loading student numbers</p>';
+            }
+        }
+
+        // Display student numbers
+        function displayStudentNumbers(studentNumbers) {
+            const gridHtml = studentNumbers.map(sn => `
+                <div class="student-number-card ${sn.assigned_user_id ? 'assigned' : ''} ${!sn.is_active ? 'inactive' : ''}">
+                    <strong>${sn.student_number}</strong><br>
+                    <small>Grade ${sn.grade_level} - Section ${sn.section}</small><br>
+                    ${sn.assigned_user_name ? `<em>Assigned to: ${sn.assigned_user_name}</em>` : '<em>Unassigned</em>'}
+                    <div style="margin-top: 0.5rem;">
+                        ${!sn.assigned_user_id ? `<button class="btn btn-sm" onclick="assignStudentNumber('${sn.student_number}')">Assign</button>` : ''}
+                        <button class="btn btn-secondary btn-sm" onclick="toggleStudentNumberStatus('${sn.student_number}', ${sn.is_active})">${sn.is_active ? 'Deactivate' : 'Activate'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('studentNumbersGrid').innerHTML = gridHtml;
+        }
+
+        // Filter student numbers
+        function filterStudentNumbers() {
+            const searchTerm = document.getElementById('studentNumberSearch').value.toLowerCase();
+            const filteredNumbers = allStudentNumbers.filter(sn => 
+                sn.student_number.toLowerCase().includes(searchTerm) ||
+                sn.grade_level.toLowerCase().includes(searchTerm) ||
+                sn.section.toLowerCase().includes(searchTerm) ||
+                (sn.assigned_user_name && sn.assigned_user_name.toLowerCase().includes(searchTerm))
+            );
+            displayStudentNumbers(filteredNumbers);
+        }
+
+        // Handle user role change in create form
+        function handleUserRoleChange() {
+            const role = document.getElementById('userRole').value;
+            const emailGroup = document.getElementById('userEmailGroup');
+            const emailInput = document.getElementById('userEmail');
+            
+            if (role === 'student') {
+                emailGroup.style.display = 'none';
+                emailInput.required = false;
+            } else {
+                emailGroup.style.display = 'block';
+                emailInput.required = true;
+            }
+        }
+
+        // Form handlers
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userData = {
+                full_name: document.getElementById('userFullName').value,
+                role: document.getElementById('userRole').value,
+                password: document.getElementById('userPassword').value
+            };
+            
+            if (userData.role !== 'student') {
+                userData.email = document.getElementById('userEmail').value;
+            }
+            
+            try {
+                await apiRequest('/admin/users', 'POST', userData);
+                showAlert('User created successfully!');
+                hideModal('createUserModal');
+                await loadUsers();
+                await loadDashboardStats();
+                document.getElementById('createUserForm').reset();
+            } catch (error) {
+                // Error already shown by apiRequest
+            }
+        });
+
+        document.getElementById('generateStudentNumbersForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                grade_level: document.getElementById('gradeLevel').value,
+                section: document.getElementById('section').value,
+                count: parseInt(document.getElementById('numberCount').value),
+                prefix: document.getElementById('numberPrefix').value || 'STU'
+            };
+            
+            try {
+                const result = await apiRequest('/admin/student-numbers/generate', 'POST', formData);
+                showAlert(`Generated ${result.student_numbers.length} student numbers successfully!`);
+                hideModal('generateStudentNumbersModal');
+                await loadStudentNumbers();
+                document.getElementById('generateStudentNumbersForm').reset();
+            } catch (error) {
+                // Error already shown by apiRequest
+            }
+        });
+
+        document.getElementById('importStudentNumbersForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const csvData = document.getElementById('csvData').value;
+            
+            try {
+                const result = await apiRequest('/admin/student-numbers/import', 'POST', { csv_data: csvData });
+                showAlert(`Import completed! ${result.imported_count} student numbers imported.`);
+                if (result.errors.length > 0) {
+                    showAlert(`Errors: ${result.errors.join(', ')}`, 'warning');
+                }
+                hideModal('importStudentNumbersModal');
+                await loadStudentNumbers();
+                document.getElementById('importStudentNumbersForm').reset();
+            } catch (error) {
+                // Error already shown by apiRequest
+            }
+        });
+
+        // Utility functions
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        async function exportUsers() {
+            try {
+                window.open(`${API_BASE}/admin/export/users`, '_blank');
+                showAlert('Export initiated!');
+            } catch (error) {
+                showAlert('Export failed', 'error');
+            }
+        }
+
+        async function exportStudentNumbers() {
+            // Create CSV content
+            const csvContent = 'Student Number,Grade Level,Section,Status,Assigned User\n' +
+                allStudentNumbers.map(sn => 
+                    `${sn.student_number},${sn.grade_level},${sn.section},${sn.is_active ? 'Active' : 'Inactive'},${sn.assigned_user_name || 'Unassigned'}`
+                ).join('\n');
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'student_numbers.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showAlert('Student numbers exported successfully!');
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - AutoM8 School Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border-right: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .school-info h2 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .school-info p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .user-details h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            fill: currentColor;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .content-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(31, 38, 135, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Children List */
+        .children-list {
+            margin: 20px 0;
+        }
+
+        .child-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .child-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .child-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .child-info h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .child-info p {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .child-stats {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+        }
+
+        .stat-good { color: #28a745; }
+        .stat-warning { color: #ffc107; }
+        .stat-danger { color: #dc3545; }
+
+        /* Recent Activity */
+        .activity-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 14px;
+        }
+
+        .activity-icon.grade { background: #28a745; color: white; }
+        .activity-icon.assignment { background: #007bff; color: white; }
+        .activity-icon.attendance { background: #ffc107; color: white; }
+
+        .activity-content h5 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .activity-content p {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .main-content {
+                padding: 20px 15px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: rgba(23, 162, 184, 0.1);
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="school-info">
+                    <h2 id="schoolName">Loading...</h2>
+                    <p id="schoolDomain">Parent Portal</p>
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">P</div>
+                <div class="user-details">
+                    <h3 id="userName">Loading...</h3>
+                    <p>Parent Account</p>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <a href="#overview" class="nav-item active" data-tab="overview">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>Overview</span>
+                </a>
+                <a href="#children" class="nav-item" data-tab="children">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8c-.77 0-1.54.5-1.85 1.26l-1.92 5.77c-.24.71.23 1.47.97 1.47H16v6h4zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 2h-4C2.45 8 2 8.45 2 9v4.5c0 .83.67 1.5 1.5 1.5S5 14.33 5 13.5V12h1v8h2v-8h1v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V9c0-.55-.45-1-1-1z"/>
+                    </svg>
+                    <span>My Children</span>
+                </a>
+                <a href="#grades" class="nav-item" data-tab="grades">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>Grades & Reports</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-tab="attendance">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-2V2h-2v2H9V2H7v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                    </svg>
+                    <span>Attendance</span>
+                </a>
+                <a href="#assignments" class="nav-item" data-tab="assignments">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                    </svg>
+                    <span>Assignments</span>
+                </a>
+                <a href="#communication" class="nav-item" data-tab="communication">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span>Communication</span>
+                </a>
+                <a href="#profile" class="nav-item" data-tab="profile">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="content-header">
+                    <div class="header-top">
+                        <div class="header-title">
+                            <h1>Parent Dashboard</h1>
+                            <p class="header-subtitle">Monitor your children's academic progress and school activities</p>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="refreshDashboard()">Refresh</button>
+                            <button class="action-btn" onclick="viewReports()">View Reports</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Children Overview -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8c-.77 0-1.54.5-1.85 1.26l-1.92 5.77c-.24.71.23 1.47.97 1.47H16v6h4z"/>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">My Children</h3>
+                        </div>
+                        <div class="children-list" id="childrenOverview">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading children information...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Grades -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">Recent Grades</h3>
+                        </div>
+                        <div id="recentGrades">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading recent grades...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Summary -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-2V2h-2v2H9V2H7v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">Attendance Summary</h3>
+                        </div>
+                        <div id="attendanceSummary">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading attendance data...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">Upcoming Events</h3>
+                        </div>
+                        <div id="upcomingEvents">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading upcoming events...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Recent Activity</h3>
+                    </div>
+                    <div class="activity-list" id="recentActivity">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading recent activity...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other tabs content will be loaded dynamically -->
+            <div id="children-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>My Children</h1>
+                        <p class="header-subtitle">Detailed information about your children's academic progress</p>
+                    </div>
+                </div>
+                <div id="childrenDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading children details...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional tabs will be implemented similarly -->
+            <div id="grades-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Grades & Reports</h1>
+                        <p class="header-subtitle">View detailed academic performance reports</p>
+                    </div>
+                </div>
+                <div id="gradesDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading grades and reports...
+                    </div>
+                </div>
+            </div>
+
+            <div id="attendance-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Attendance Records</h1>
+                        <p class="header-subtitle">Monitor your children's attendance patterns</p>
+                    </div>
+                </div>
+                <div id="attendanceDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading attendance records...
+                    </div>
+                </div>
+            </div>
+
+            <div id="assignments-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Assignments & Homework</h1>
+                        <p class="header-subtitle">Track your children's assignments and submissions</p>
+                    </div>
+                </div>
+                <div id="assignmentsDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading assignments...
+                    </div>
+                </div>
+            </div>
+
+            <div id="communication-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>School Communication</h1>
+                        <p class="header-subtitle">Messages and announcements from school</p>
+                    </div>
+                </div>
+                <div id="communicationDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading communications...
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile-tab" class="tab-content" style="display: none;">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Profile Settings</h1>
+                        <p class="header-subtitle">Manage your account and notification preferences</p>
+                    </div>
+                </div>
+                <div id="profileDetail">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading profile...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentSchool = null;
+        let authToken = localStorage.getItem('authToken');
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!authToken) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            initializeDashboard();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            // Mobile sidebar toggle
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                // Add mobile menu button if needed
+            }
+        }
+
+        // Initialize dashboard data
+        async function initializeDashboard() {
+            try {
+                await loadUserInfo();
+                await loadSchoolInfo();
+                await loadDashboardData();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+                showAlert('Failed to load dashboard data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Load user information
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    currentUser = await response.json();
+                    updateUserDisplay();
+                } else {
+                    throw new Error('Failed to load user info');
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                localStorage.removeItem('authToken');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load school information
+        async function loadSchoolInfo() {
+            if (!currentUser || !currentUser.school_id) return;
+
+            try {
+                const response = await fetch(`/api/schools/${currentUser.school_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    currentSchool = await response.json();
+                    updateSchoolDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading school info:', error);
+            }
+        }
+
+        // Update user display
+        function updateUserDisplay() {
+            if (!currentUser) return;
+
+            document.getElementById('userName').textContent = currentUser.full_name;
+            document.getElementById('userAvatar').textContent = currentUser.full_name.charAt(0).toUpperCase();
+        }
+
+        // Update school display
+        function updateSchoolDisplay() {
+            if (!currentSchool) return;
+
+            document.getElementById('schoolName').textContent = currentSchool.name;
+            document.getElementById('schoolDomain').textContent = currentSchool.full_domain;
+
+            // Apply school branding
+            if (currentSchool.primary_color) {
+                document.documentElement.style.setProperty('--primary-color', currentSchool.primary_color);
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            await Promise.all([
+                loadChildren(),
+                loadRecentGrades(),
+                loadAttendanceSummary(),
+                loadUpcomingEvents(),
+                loadRecentActivity()
+            ]);
+        }
+
+        // Load children information
+        async function loadChildren() {
+            try {
+                const response = await fetch('/api/parents/children', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const children = await response.json();
+                    displayChildren(children);
+                } else {
+                    throw new Error('Failed to load children');
+                }
+            } catch (error) {
+                console.error('Error loading children:', error);
+                document.getElementById('childrenOverview').innerHTML = 
+                    '<div class="alert alert-warning">Unable to load children information.</div>';
+            }
+        }
+
+        // Display children
+        function displayChildren(children) {
+            const container = document.getElementById('childrenOverview');
+            
+            if (!children || children.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No children found in your account.</div>';
+                return;
+            }
+
+            const childrenHTML = children.map(child => `
+                <div class="child-item">
+                    <div class="child-avatar">${child.full_name.charAt(0)}</div>
+                    <div class="child-info">
+                        <h4>${child.full_name}</h4>
+                        <p>Grade ${child.grade_level}${child.grade_section ? `-${child.grade_section}` : ''} • Student #${child.student_number}</p>
+                    </div>
+                    <div class="child-stats">
+                        <div class="stat-item stat-good">
+                            <span>📊 GPA: ${child.current_gpa || 'N/A'}</span>
+                        </div>
+                        <div class="stat-item ${child.attendance_rate >= 90 ? 'stat-good' : child.attendance_rate >= 80 ? 'stat-warning' : 'stat-danger'}">
+                            <span>📅 Attendance: ${child.attendance_rate || 0}%</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = childrenHTML;
+        }
+
+        // Load recent grades
+        async function loadRecentGrades() {
+            try {
+                const response = await fetch('/api/parents/recent-grades', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const grades = await response.json();
+                    displayRecentGrades(grades);
+                } else {
+                    throw new Error('Failed to load recent grades');
+                }
+            } catch (error) {
+                console.error('Error loading recent grades:', error);
+                document.getElementById('recentGrades').innerHTML = 
+                    '<div class="alert alert-warning">Unable to load recent grades.</div>';
+            }
+        }
+
+        // Display recent grades
+        function displayRecentGrades(grades) {
+            const container = document.getElementById('recentGrades');
+            
+            if (!grades || grades.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No recent grades available.</div>';
+                return;
+            }
+
+            const gradesHTML = grades.slice(0, 5).map(grade => `
+                <div class="activity-item">
+                    <div class="activity-icon grade">📊</div>
+                    <div class="activity-content">
+                        <h5>${grade.assignment_title}</h5>
+                        <p>${grade.student_name} - ${grade.subject}</p>
+                        <p><strong>Score: ${grade.score}/${grade.max_score}</strong></p>
+                        <div class="activity-time">${formatDate(grade.created_at)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = gradesHTML;
+        }
+
+        // Load attendance summary
+        async function loadAttendanceSummary() {
+            try {
+                const response = await fetch('/api/parents/attendance-summary', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const summary = await response.json();
+                    displayAttendanceSummary(summary);
+                } else {
+                    throw new Error('Failed to load attendance summary');
+                }
+            } catch (error) {
+                console.error('Error loading attendance summary:', error);
+                document.getElementById('attendanceSummary').innerHTML = 
+                    '<div class="alert alert-warning">Unable to load attendance data.</div>';
+            }
+        }
+
+        // Display attendance summary
+        function displayAttendanceSummary(summary) {
+            const container = document.getElementById('attendanceSummary');
+            
+            if (!summary || summary.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No attendance data available.</div>';
+                return;
+            }
+
+            const summaryHTML = summary.map(child => `
+                <div class="child-item">
+                    <div class="child-avatar">${child.student_name.charAt(0)}</div>
+                    <div class="child-info">
+                        <h4>${child.student_name}</h4>
+                        <p>This Month</p>
+                    </div>
+                    <div class="child-stats">
+                        <div class="stat-item ${child.attendance_rate >= 90 ? 'stat-good' : child.attendance_rate >= 80 ? 'stat-warning' : 'stat-danger'}">
+                            <span>${child.attendance_rate}% Present</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>${child.days_present}/${child.total_days} Days</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = summaryHTML;
+        }
+
+        // Load upcoming events
+        async function loadUpcomingEvents() {
+            try {
+                const response = await fetch('/api/parents/upcoming-events', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const events = await response.json();
+                    displayUpcomingEvents(events);
+                } else {
+                    throw new Error('Failed to load upcoming events');
+                }
+            } catch (error) {
+                console.error('Error loading upcoming events:', error);
+                document.getElementById('upcomingEvents').innerHTML = 
+                    '<div class="alert alert-warning">Unable to load upcoming events.</div>';
+            }
+        }
+
+        // Display upcoming events
+        function displayUpcomingEvents(events) {
+            const container = document.getElementById('upcomingEvents');
+            
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No upcoming events.</div>';
+                return;
+            }
+
+            const eventsHTML = events.slice(0, 3).map(event => `
+                <div class="activity-item">
+                    <div class="activity-icon ${event.type}">📅</div>
+                    <div class="activity-content">
+                        <h5>${event.title}</h5>
+                        <p>${event.description}</p>
+                        <div class="activity-time">${formatDate(event.event_date)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = eventsHTML;
+        }
+
+        // Load recent activity
+        async function loadRecentActivity() {
+            try {
+                const response = await fetch('/api/parents/recent-activity', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const activities = await response.json();
+                    displayRecentActivity(activities);
+                } else {
+                    throw new Error('Failed to load recent activity');
+                }
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+                document.getElementById('recentActivity').innerHTML = 
+                    '<div class="alert alert-warning">Unable to load recent activity.</div>';
+            }
+        }
+
+        // Display recent activity
+        function displayRecentActivity(activities) {
+            const container = document.getElementById('recentActivity');
+            
+            if (!activities || activities.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No recent activity.</div>';
+                return;
+            }
+
+            const activitiesHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">${getActivityIcon(activity.type)}</div>
+                    <div class="activity-content">
+                        <h5>${activity.title}</h5>
+                        <p>${activity.description}</p>
+                        <div class="activity-time">${formatDate(activity.created_at)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = activitiesHTML;
+        }
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+
+            // Add active class to selected nav item
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Load tab-specific data if needed
+            loadTabData(tabName);
+        }
+
+        // Load tab-specific data
+        function loadTabData(tabName) {
+            switch(tabName) {
+                case 'children':
+                    loadChildrenDetail();
+                    break;
+                case 'grades':
+                    loadGradesDetail();
+                    break;
+                case 'attendance':
+                    loadAttendanceDetail();
+                    break;
+                case 'assignments':
+                    loadAssignmentsDetail();
+                    break;
+                case 'communication':
+                    loadCommunicationDetail();
+                    break;
+                case 'profile':
+                    loadProfileDetail();
+                    break;
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function getActivityIcon(type) {
+            const icons = {
+                'grade': '📊',
+                'assignment': '📝',
+                'attendance': '📅',
+                'communication': '💬',
+                'event': '🎉'
+            };
+            return icons[type] || '📋';
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertClass = `alert-${type}`;
+            const alertHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            
+            // You can implement a proper alert system here
+            console.log(`${type.toUpperCase()}: ${message}`);
+        }
+
+        // Dashboard actions
+        function refreshDashboard() {
+            location.reload();
+        }
+
+        function viewReports() {
+            switchTab('grades');
+        }
+
+        // Placeholder functions for detailed views
+        function loadChildrenDetail() {
+            document.getElementById('childrenDetail').innerHTML = '<div class="alert alert-info">Children detail view will be implemented here.</div>';
+        }
+
+        function loadGradesDetail() {
+            document.getElementById('gradesDetail').innerHTML = '<div class="alert alert-info">Grades detail view will be implemented here.</div>';
+        }
+
+        function loadAttendanceDetail() {
+            document.getElementById('attendanceDetail').innerHTML = '<div class="alert alert-info">Attendance detail view will be implemented here.</div>';
+        }
+
+        function loadAssignmentsDetail() {
+            document.getElementById('assignmentsDetail').innerHTML = '<div class="alert alert-info">Assignments detail view will be implemented here.</div>';
+        }
+
+        function loadCommunicationDetail() {
+            document.getElementById('communicationDetail').innerHTML = '<div class="alert alert-info">Communication detail view will be implemented here.</div>';
+        }
+
+        function loadProfileDetail() {
+            document.getElementById('profileDetail').innerHTML = '<div class="alert alert-info">Profile detail view will be implemented here.</div>';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

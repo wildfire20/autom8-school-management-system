@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Button Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        #testResults {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Admin Panel Function Tester</h1>
+    
+    <div class="test-section">
+        <h2>🔐 Authentication Test</h2>
+        <p>First, let's make sure you're logged in as admin:</p>
+        <button class="test-button" onclick="testAuth()">Test Admin Authentication</button>
+        <div id="authResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 API Endpoint Tests</h2>
+        <p>Test all admin API endpoints:</p>
+        <button class="test-button" onclick="testStats()">Test Stats API</button>
+        <button class="test-button" onclick="testUsers()">Test Users API</button>
+        <button class="test-button" onclick="testCreateUser()">Test Create User</button>
+        <div id="apiResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔘 Button Function Tests</h2>
+        <p>Test individual admin panel functions:</p>
+        <button class="test-button" onclick="testCreateUserModal()">Test Create User Modal</button>
+        <button class="test-button" onclick="testBackupDatabase()">Test Backup Database</button>
+        <button class="test-button" onclick="testClearCache()">Test Clear Cache</button>
+        <button class="test-button" onclick="testExportUsers()">Test Export Users</button>
+        <button class="test-button" onclick="testSystemSettings()">Test System Settings</button>
+        <div id="buttonResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🌐 Navigation Tests</h2>
+        <p>Quick navigation to admin panel:</p>
+        <a href="admin.html" class="test-button">Open Admin Panel</a>
+        <a href="index.html" class="test-button">Login Page</a>
+        <button class="test-button" onclick="quickAdminLogin()">Quick Admin Login</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 Test Results</h2>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let testResults = [];
+        
+        function logResult(test, status, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            testResults.unshift(`[${timestamp}] ${test}: <span class="${status}">${message}</span>`);
+            document.getElementById('testResults').innerHTML = testResults.join('<br>');
+        }
+        
+        async function testAuth() {
+            logResult('Auth Test', 'info', 'Checking authentication...');
+            
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            
+            if (!token) {
+                logResult('Auth Test', 'error', 'No auth token found - please login first');
+                return false;
+            }
+            
+            try {
+                const userObj = JSON.parse(user);
+                if (userObj.role !== 'admin') {
+                    logResult('Auth Test', 'error', `Wrong role: ${userObj.role} (need admin)`);
+                    return false;
+                }
+                
+                logResult('Auth Test', 'success', `Authenticated as admin: ${userObj.full_name}`);
+                return true;
+            } catch (error) {
+                logResult('Auth Test', 'error', 'Invalid user data in localStorage');
+                return false;
+            }
+        }
+        
+        async function apiCall(endpoint, options = {}) {
+            const token = localStorage.getItem('authToken');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            };
+            
+            const response = await fetch(`${API_BASE}${endpoint}`, config);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || `HTTP ${response.status}`);
+            }
+            
+            return data;
+        }
+        
+        async function testStats() {
+            logResult('Stats API', 'info', 'Testing admin stats endpoint...');
+            
+            try {
+                const data = await apiCall('/admin/dashboard/admin-stats');
+                logResult('Stats API', 'success', `Stats loaded: ${data.stats.total_users} users`);
+            } catch (error) {
+                logResult('Stats API', 'error', error.message);
+            }
+        }
+        
+        async function testUsers() {
+            logResult('Users API', 'info', 'Testing users list endpoint...');
+            
+            try {
+                const data = await apiCall('/admin/users');
+                logResult('Users API', 'success', `Users loaded: ${data.users.length} users`);
+            } catch (error) {
+                logResult('Users API', 'error', error.message);
+            }
+        }
+        
+        async function testCreateUser() {
+            logResult('Create User API', 'info', 'Testing user creation...');
+            
+            const userData = {
+                full_name: 'Test User ' + Date.now(),
+                email: `test${Date.now()}@school.com`,
+                password: 'test123',
+                role: 'student'
+            };
+            
+            try {
+                const data = await apiCall('/admin/users', {
+                    method: 'POST',
+                    body: JSON.stringify(userData)
+                });
+                logResult('Create User API', 'success', `User created: ${data.user.full_name}`);
+            } catch (error) {
+                logResult('Create User API', 'error', error.message);
+            }
+        }
+        
+        function testCreateUserModal() {
+            logResult('Create User Modal', 'info', 'Testing modal function...');
+            
+            try {
+                if (typeof enhancedShowCreateUserModal === 'function') {
+                    enhancedShowCreateUserModal();
+                    logResult('Create User Modal', 'success', 'Enhanced modal opened');
+                } else if (typeof showCreateUserModal === 'function') {
+                    showCreateUserModal();
+                    logResult('Create User Modal', 'success', 'Standard modal opened');
+                } else {
+                    logResult('Create User Modal', 'error', 'Modal function not found');
+                }
+            } catch (error) {
+                logResult('Create User Modal', 'error', error.message);
+            }
+        }
+        
+        function testBackupDatabase() {
+            logResult('Backup Database', 'info', 'Testing backup function...');
+            
+            try {
+                if (typeof enhancedBackupDatabase === 'function') {
+                    enhancedBackupDatabase();
+                    logResult('Backup Database', 'success', 'Enhanced backup function executed');
+                } else if (typeof backupDatabase === 'function') {
+                    backupDatabase();
+                    logResult('Backup Database', 'success', 'Standard backup function executed');
+                } else {
+                    logResult('Backup Database', 'error', 'Backup function not found');
+                }
+            } catch (error) {
+                logResult('Backup Database', 'error', error.message);
+            }
+        }
+        
+        function testClearCache() {
+            logResult('Clear Cache', 'info', 'Testing cache clear function...');
+            
+            try {
+                if (typeof enhancedClearCache === 'function') {
+                    enhancedClearCache();
+                    logResult('Clear Cache', 'success', 'Enhanced cache function executed');
+                } else if (typeof clearCache === 'function') {
+                    clearCache();
+                    logResult('Clear Cache', 'success', 'Standard cache function executed');
+                } else {
+                    logResult('Clear Cache', 'error', 'Cache function not found');
+                }
+            } catch (error) {
+                logResult('Clear Cache', 'error', error.message);
+            }
+        }
+        
+        function testExportUsers() {
+            logResult('Export Users', 'info', 'Testing export function...');
+            
+            try {
+                if (typeof enhancedExportUsers === 'function') {
+                    enhancedExportUsers();
+                    logResult('Export Users', 'success', 'Enhanced export function executed');
+                } else if (typeof exportUsers === 'function') {
+                    exportUsers();
+                    logResult('Export Users', 'success', 'Standard export function executed');
+                } else {
+                    logResult('Export Users', 'error', 'Export function not found');
+                }
+            } catch (error) {
+                logResult('Export Users', 'error', error.message);
+            }
+        }
+        
+        function testSystemSettings() {
+            logResult('System Settings', 'info', 'Testing settings function...');
+            
+            try {
+                if (typeof enhancedShowSystemSettings === 'function') {
+                    enhancedShowSystemSettings();
+                    logResult('System Settings', 'success', 'Enhanced settings function executed');
+                } else if (typeof showSystemSettings === 'function') {
+                    showSystemSettings();
+                    logResult('System Settings', 'success', 'Standard settings function executed');
+                } else {
+                    logResult('System Settings', 'error', 'Settings function not found');
+                }
+            } catch (error) {
+                logResult('System Settings', 'error', error.message);
+            }
+        }
+        
+        async function quickAdminLogin() {
+            logResult('Quick Login', 'info', 'Attempting quick admin login...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@school.com',
+                        password: 'admin123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    logResult('Quick Login', 'success', 'Logged in as admin - you can now test functions');
+                } else {
+                    logResult('Quick Login', 'error', data.error);
+                }
+            } catch (error) {
+                logResult('Quick Login', 'error', error.message);
+            }
+        }
+        
+        // Auto-run auth test on page load
+        window.addEventListener('load', () => {
+            logResult('Page Load', 'info', 'Admin Panel Tester loaded');
+            testAuth();
+        });
+    </script>
+</body>
+</html>

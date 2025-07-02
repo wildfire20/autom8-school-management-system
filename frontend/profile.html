@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile & Settings - AutoM8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-welcome {
+            color: white;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            border: 1px solid #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: 1px solid #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .navigation {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group input[readonly] {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+
+        .stats-item .label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stats-item .value {
+            color: #667eea;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🏫 AutoM8 - Profile & Settings</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="assignments.html" class="nav-link">Assignments</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="grades.html" class="nav-link">Grades</a>
+            <a href="notifications.html" class="nav-link">Notifications</a>
+            <a href="parents.html" class="nav-link">Parents</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <span id="userName" class="user-welcome">Loading...</span>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>⚙️ Profile & Settings</h2>
+            <p>Manage your account settings and personal information</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="profile-grid">
+            <div class="section">
+                <h2>👤 Profile Information</h2>
+                
+                <div class="avatar-section">
+                    <div class="avatar" id="userAvatar">👤</div>
+                    <h3 id="displayName">Loading...</h3>
+                    <p id="userRole" style="color: #666; margin-top: 0.5rem;"></p>
+                </div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>🔒 Change Password</h2>
+                
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+            <div class="section">
+                <h2>📊 Account Statistics</h2>
+                <div id="accountStats">
+                    <div class="loading">Loading statistics...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Account Settings</h2>
+                
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="notifications">Email Notifications</label>
+                        <select id="notifications" name="notifications">
+                            <option value="all">All notifications</option>
+                            <option value="important">Important only</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="language">Preferred Language</label>
+                        <select id="language" name="language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">Timezone</label>
+                        <select id="timezone" name="timezone">
+                            <option value="UTC">UTC</option>
+                            <option value="EST">Eastern Time</option>
+                            <option value="CST">Central Time</option>
+                            <option value="MST">Mountain Time</option>
+                            <option value="PST">Pacific Time</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        // Get authentication token
+        function getAuthToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getAuthToken();
+            if (!token) {
+                window.location.href = '/';
+                return false;
+            }
+            return true;
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Load current user info
+        async function loadUserInfo() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    currentUser = await response.json();
+                    displayUserInfo();
+                    loadAccountStats();
+                } else {
+                    throw new Error('Failed to load user info');
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
+            }
+        }
+
+        // Display user information
+        function displayUserInfo() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('displayName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = `Role: ${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)}`;
+            
+            // Set avatar emoji based on role
+            const avatarEmojis = {
+                teacher: '👨‍🏫',
+                student: '🧑‍🎓',
+                parent: '👨‍👩‍👧‍👦',
+                admin: '👨‍💼'
+            };
+            document.getElementById('userAvatar').textContent = avatarEmojis[currentUser.role] || '👤';
+
+            // Fill form fields
+            document.getElementById('name').value = currentUser.name || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('address').value = currentUser.address || '';
+            
+            // Load settings (with defaults)
+            document.getElementById('notifications').value = currentUser.notification_preference || 'all';
+            document.getElementById('language').value = currentUser.language || 'en';
+            document.getElementById('timezone').value = currentUser.timezone || 'UTC';
+        }
+
+        // Load account statistics
+        async function loadAccountStats() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+                    displayAccountStats(stats);
+                } else {
+                    // If stats endpoint doesn't exist, show basic info
+                    const basicStats = {
+                        accountCreated: currentUser.created_at || new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        role: currentUser.role
+                    };
+                    displayAccountStats(basicStats);
+                }
+            } catch (error) {
+                console.error('Error loading account stats:', error);
+                const basicStats = {
+                    accountCreated: currentUser.created_at || new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    role: currentUser.role
+                };
+                displayAccountStats(basicStats);
+            }
+        }
+
+        // Display account statistics
+        function displayAccountStats(stats) {
+            const container = document.getElementById('accountStats');
+            
+            let html = '';
+            
+            if (stats.accountCreated) {
+                html += `
+                    <div class="stats-item">
+                        <span class="label">Account Created</span>
+                        <span class="value">${new Date(stats.accountCreated).toLocaleDateString()}</span>
+                    </div>
+                `;
+            }
+            
+            if (stats.lastLogin) {
+                html += `
+                    <div class="stats-item">
+                        <span class="label">Last Login</span>
+                        <span class="value">${new Date(stats.lastLogin).toLocaleDateString()}</span>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="stats-item">
+                    <span class="label">Role</span>
+                    <span class="value">${stats.role ? stats.role.charAt(0).toUpperCase() + stats.role.slice(1) : 'User'}</span>
+                </div>
+            `;
+            
+            if (stats.totalAssignments !== undefined) {
+                html += `
+                    <div class="stats-item">
+                        <span class="label">Total Assignments</span>
+                        <span class="value">${stats.totalAssignments}</span>
+                    </div>
+                `;
+            }
+            
+            if (stats.totalClasses !== undefined) {
+                html += `
+                    <div class="stats-item">
+                        <span class="label">Total Classes</span>
+                        <span class="value">${stats.totalClasses}</span>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const profileData = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                address: formData.get('address')
+            };
+
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = { ...currentUser, ...updatedUser };
+                    displayUserInfo();
+                    showAlert('Profile updated successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showAlert(error.message, 'danger');
+            }
+        });
+
+        // Handle password form submission
+        document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const newPassword = formData.get('newPassword');
+            const confirmPassword = formData.get('confirmPassword');
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('New passwords do not match', 'danger');
+                return;
+            }
+
+            const passwordData = {
+                currentPassword: formData.get('currentPassword'),
+                newPassword: newPassword
+            };
+
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/change-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(passwordData)
+                });
+
+                if (response.ok) {
+                    this.reset();
+                    showAlert('Password changed successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to change password');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showAlert(error.message, 'danger');
+            }
+        });
+
+        // Handle settings form submission
+        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const settingsData = {
+                notification_preference: formData.get('notifications'),
+                language: formData.get('language'),
+                timezone: formData.get('timezone')
+            };
+
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/auth/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(settingsData)
+                });
+
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = { ...currentUser, ...updatedUser };
+                    showAlert('Settings saved successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save settings');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showAlert(error.message, 'danger');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                loadUserInfo();
+            }
+        });
+    </script>
+
+    <!-- Include school branding configuration -->
+    <script src="/assets/school-config.js"></script>
+</body>
+</html>

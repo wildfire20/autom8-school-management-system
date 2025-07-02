@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - AutoM8 School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-text {
+            color: #667eea;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .school-info {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(45deg, #5a67d8, #6b5b95);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .assignment-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .assignment-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .assignment-meta {
+            color: #666;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .due-date {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .due-date.upcoming {
+            background: #fff8e1;
+            color: #ff8f00;
+        }
+
+        .due-date.completed {
+            background: #f0fff4;
+            color: #38a169;
+        }
+
+        .grade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9ff;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+
+        .grade-score {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .notification-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc3545;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+    <div class="container">
+        <div class="header">
+            <div class="welcome-text">Welcome Back, <span id="studentName">Student</span>!</div>
+            <div class="school-info">
+                <span id="schoolName">Loading...</span> • 
+                Grade <span id="studentGrade">-</span> • 
+                Section <span id="studentSection">-</span>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <a href="assignments.html" class="nav-btn">📚 My Assignments</a>
+            <a href="grades.html" class="nav-btn">📊 My Grades</a>
+            <a href="attendance.html" class="nav-btn">📅 My Attendance</a>
+            <a href="classes.html" class="nav-btn">🏫 My Classes</a>
+            <a href="notifications.html" class="nav-btn">🔔 Notifications</a>
+            <a href="profile.html" class="nav-btn">👤 Profile</a>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Academic Overview -->
+            <div class="card">
+                <h3>📊 Academic Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalAssignments">-</div>
+                        <div class="stat-label">Total Assignments</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="completedAssignments">-</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="averageGrade">-</div>
+                        <div class="stat-label">Average Grade</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="attendanceRate">-</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Assignments -->
+            <div class="card">
+                <h3>📝 Upcoming Assignments</h3>
+                <div id="upcomingAssignments" class="loading">Loading assignments...</div>
+            </div>
+
+            <!-- Recent Grades -->
+            <div class="card">
+                <h3>📈 Recent Grades</h3>
+                <div id="recentGrades" class="loading">Loading grades...</div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card">
+                <h3>🔔 Recent Notifications</h3>
+                <div id="recentNotifications" class="loading">Loading notifications...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let token = null;
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Check authentication and load user data
+        function checkAuth() {
+            token = localStorage.getItem('authToken') || localStorage.getItem('token');
+            const userString = localStorage.getItem('currentUser') || localStorage.getItem('user');
+            
+            if (!token || !userString) {
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            try {
+                currentUser = JSON.parse(userString);
+                
+                // Verify this is a student
+                if (currentUser.role !== 'student') {
+                    alert('Access denied. This page is for students only.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'index.html';
+                return false;
+            }
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            if (!checkAuth()) return;
+
+            // Update user info in header
+            document.getElementById('studentName').textContent = currentUser.full_name || 'Student';
+            document.getElementById('studentGrade').textContent = currentUser.grade_level || '-';
+            document.getElementById('studentSection').textContent = currentUser.section || currentUser.grade_section || '-';
+
+            // Load school info
+            await loadSchoolInfo();
+
+            // Load dashboard data
+            await Promise.all([
+                loadAcademicOverview(),
+                loadUpcomingAssignments(),
+                loadRecentGrades(),
+                loadRecentNotifications()
+            ]);
+        }
+
+        // Load school information
+        async function loadSchoolInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/school/${currentUser.school_domain || 'default'}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('schoolName').textContent = data.school?.name || 'AutoM8 School';
+                    
+                    // Apply school branding if available
+                    if (data.school?.primary_color) {
+                        document.documentElement.style.setProperty('--primary-color', data.school.primary_color);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading school info:', error);
+                document.getElementById('schoolName').textContent = 'AutoM8 School';
+            }
+        }
+
+        // Load academic overview stats
+        async function loadAcademicOverview() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update stats (will be implemented based on API response structure)
+                    document.getElementById('totalAssignments').textContent = '12'; // Placeholder
+                    document.getElementById('completedAssignments').textContent = '8'; // Placeholder
+                    document.getElementById('averageGrade').textContent = '85%'; // Placeholder
+                    document.getElementById('attendanceRate').textContent = '95%'; // Placeholder
+                } else {
+                    throw new Error('Failed to load stats');
+                }
+            } catch (error) {
+                console.error('Error loading academic overview:', error);
+                // Set default values
+                document.getElementById('totalAssignments').textContent = '-';
+                document.getElementById('completedAssignments').textContent = '-';
+                document.getElementById('averageGrade').textContent = '-';
+                document.getElementById('attendanceRate').textContent = '-';
+            }
+        }
+
+        // Load upcoming assignments
+        async function loadUpcomingAssignments() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/assignments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('upcomingAssignments');
+                    
+                    if (data.assignments && data.assignments.length > 0) {
+                        container.innerHTML = data.assignments.slice(0, 5).map(assignment => `
+                            <div class="assignment-item">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <div class="assignment-meta">
+                                    <span>${assignment.class_name || 'General'}</span>
+                                    <span class="due-date ${getDueDateClass(assignment.due_date)}">
+                                        Due: ${formatDate(assignment.due_date)}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No upcoming assignments</p>';
+                    }
+                } else {
+                    throw new Error('Failed to load assignments');
+                }
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                document.getElementById('upcomingAssignments').innerHTML = 
+                    '<div class="error">Failed to load assignments</div>';
+            }
+        }
+
+        // Load recent grades
+        async function loadRecentGrades() {
+            try {
+                const response = await fetch(`${API_BASE}/grades/student/${currentUser.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('recentGrades');
+                    
+                    if (data.grades && data.grades.length > 0) {
+                        container.innerHTML = data.grades.slice(0, 5).map(grade => `
+                            <div class="grade-item">
+                                <div>
+                                    <div style="font-weight: bold;">${grade.assignment_name}</div>
+                                    <div style="font-size: 0.9em; color: #666;">${grade.class_name}</div>
+                                </div>
+                                <div class="grade-score">${grade.points_earned}/${grade.max_points} (${grade.percentage}%)</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No grades available</p>';
+                    }
+                } else {
+                    throw new Error('Failed to load grades');
+                }
+            } catch (error) {
+                console.error('Error loading grades:', error);
+                document.getElementById('recentGrades').innerHTML = 
+                    '<div class="error">Failed to load grades</div>';
+            }
+        }
+
+        // Load recent notifications
+        async function loadRecentNotifications() {
+            try {
+                const response = await fetch(`${API_BASE}/notifications?limit=5`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('recentNotifications');
+                    
+                    if (data.notifications && data.notifications.length > 0) {
+                        container.innerHTML = data.notifications.map(notification => `
+                            <div class="notification-item">
+                                <div class="notification-title">${notification.title}</div>
+                                <div style="color: #666; font-size: 0.9em;">${notification.message}</div>
+                                <div class="notification-time">${formatDate(notification.created_at)}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No recent notifications</p>';
+                    }
+                } else {
+                    throw new Error('Failed to load notifications');
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                document.getElementById('recentNotifications').innerHTML = 
+                    '<div class="error">Failed to load notifications</div>';
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'No date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function getDueDateClass(dueDateString) {
+            if (!dueDateString) return '';
+            
+            const dueDate = new Date(dueDateString);
+            const now = new Date();
+            const timeDiff = dueDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            if (daysDiff < 0) return 'completed';
+            if (daysDiff <= 2) return 'upcoming';
+            return '';
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('token');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
