@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoM8 School Management System - Transform Your School</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 100px 0; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; font-weight: 700; }
+        .hero p { font-size: 1.4rem; margin-bottom: 40px; opacity: 0.9; }
+        .cta-button { display: inline-block; background: #ff6b6b; color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.2rem; transition: transform 0.3s; }
+        .cta-button:hover { transform: translateY(-2px); }
+        .features { padding: 100px 0; background: #f8f9fa; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
+        .feature { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .feature-icon { font-size: 3rem; margin-bottom: 20px; }
+        .feature h3 { font-size: 1.5rem; margin-bottom: 15px; color: #2c3e50; }
+        .pricing { padding: 100px 0; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px; }
+        .pricing-card { background: white; border: 2px solid #e9ecef; border-radius: 15px; padding: 40px; text-align: center; position: relative; }
+        .pricing-card.featured { border-color: #667eea; transform: scale(1.05); }
+        .pricing-card h3 { font-size: 1.8rem; margin-bottom: 10px; }
+        .pricing-card .price { font-size: 3rem; font-weight: 700; color: #667eea; margin-bottom: 20px; }
+        .pricing-card .price span { font-size: 1rem; color: #666; }
+        .pricing-card ul { list-style: none; margin-bottom: 30px; }
+        .pricing-card li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .demo { padding: 80px 0; background: #2c3e50; color: white; text-align: center; }
+        .demo h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .demo p { font-size: 1.2rem; margin-bottom: 40px; }
+        .form-group { margin-bottom: 20px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .pricing-card.featured { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>🎓 AutoM8 School Management System</h1>
+            <p>Streamline your school operations, improve communication, and save hours every week</p>
+            <a href="#demo" class="cta-button">Start Free Demo</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Everything Your School Needs</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;">
+                A comprehensive solution designed specifically for modern schools
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <h3>Student Management</h3>
+                    <p>Complete student profiles, enrollment tracking, and academic history in one place.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <h3>Grade Management</h3>
+                    <p>Streamlined gradebook, automatic calculations, and instant report card generation.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📅</div>
+                    <h3>Attendance Tracking</h3>
+                    <p>Real-time attendance monitoring with automatic parent notifications.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Parent Portal</h3>
+                    <p>Keep parents informed with instant access to grades, attendance, and school communications.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Ready</h3>
+                    <p>Access from any device - desktop, tablet, or smartphone. Always stay connected.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Compliant</h3>
+                    <p>FERPA compliant with enterprise-grade security to protect student data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Simple, Transparent Pricing</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: #666;">Choose the plan that fits your school size</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="price">$99<span>/month</span></div>
+                    <ul>
+                        <li>✅ Up to 500 students</li>
+                        <li>✅ Basic features</li>
+                        <li>✅ Email support</li>
+                        <li>✅ Mobile access</li>
+                        <li>✅ Parent portal</li>
+                    </ul>
+                    <a href="#demo" class="cta-button" style="background: #28a745;">Get Started</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3>Professional</h3>
+                    <div class="price">$199<span>/month</span></div>
+                    <ul>
+                        <li>✅ Up to 1,500 students</li>
+                        <li>✅ All features included</li>
+                        <li>✅ Phone + email support</li>
+                        <li>✅ Custom branding</li>
+                        <li>✅ Advanced reporting</li>
+                        <li>✅ API integrations</li>
+                    </ul>
+                    <a href="#demo" class="cta-button">Most Popular</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$399<span>/month</span></div>
+                    <ul>
+                        <li>✅ Unlimited students</li>
+                        <li>✅ Priority support</li>
+                        <li>✅ Custom integrations</li>
+                        <li>✅ On-site training</li>
+                        <li>✅ Dedicated account manager</li>
+                        <li>✅ Custom development</li>
+                    </ul>
+                    <a href="#demo" class="cta-button" style="background: #6f42c1;">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Request Section -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <h2>See AutoM8 in Action</h2>
+            <p>Request a personalized demo for your school - completely free, no commitment required</p>
+            
+            <form id="demoForm" style="max-width: 500px; margin: 0 auto;">
+                <div class="form-group">
+                    <label for="schoolName">School Name *</label>
+                    <input type="text" id="schoolName" name="schoolName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactName">Your Name *</label>
+                    <input type="text" id="contactName" name="contactName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentCount">Number of Students</label>
+                    <select id="studentCount" name="studentCount">
+                        <option value="">Select range</option>
+                        <option value="0-100">0-100 students</option>
+                        <option value="101-500">101-500 students</option>
+                        <option value="501-1000">501-1000 students</option>
+                        <option value="1001-2000">1001-2000 students</option>
+                        <option value="2000+">2000+ students</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="cta-button" style="width: 100%; margin-top: 20px;">
+                    Request Free Demo
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('demoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const schoolName = formData.get('schoolName');
+            
+            // In a real implementation, you'd send this to your server
+            alert(`Thank you! We'll contact you within 24 hours to schedule a demo for ${schoolName}.`);
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
