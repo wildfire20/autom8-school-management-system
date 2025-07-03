@@ -4,7 +4,13 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 require("dotenv").config();
-const pool = require("./db");
+
+// Database connection for Railway/Heroku
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Create HTTP server and Socket.IO instance
 const server = http.createServer(app);
@@ -125,3 +131,43 @@ function broadcastNotification(schoolId, notification, targetUsers = null) {
 // Make io and broadcastNotification available to routes
 app.set('io', io);
 app.set('broadcastNotification', broadcastNotification);
+
+// Database initialization function
+async function initializeDatabase() {
+  try {
+    console.log('🔄 Initializing database...');
+    
+    // Test connection
+    const client = await pool.connect();
+    console.log('✅ Database connected successfully');
+    
+    // Check if tables exist
+    const result = await client.query(`
+      SELECT table_name FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `);
+    
+    if (result.rows.length === 0) {
+      console.log('📋 No tables found, creating database schema...');
+      
+      // Run database setup
+      const { setupDatabase } = require('./setup-database');
+      await setupDatabase();
+      
+      console.log('✅ Database schema created successfully');
+    } else {
+      console.log('✅ Database tables already exist');
+    }
+    
+    client.release();
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error.message);
+    
+    if (error.message.includes('ECONNREFUSED')) {
+      console.log('💡 Make sure DATABASE_URL environment variable is set');
+    }
+  }
+}
+
+// Initialize the database
+initializeDatabase();
