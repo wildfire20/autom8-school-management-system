@@ -180,6 +180,11 @@ async function initializeDatabase() {
       console.log('✅ Database schema created successfully');
     } else {
       console.log('✅ Database tables already exist');
+      
+      // Run migration to ensure schema is up to date
+      console.log('🔄 Running database migration...');
+      const { migrateDatabase } = require('./migrate-database');
+      await migrateDatabase();
     }
     
     client.release();

@@ -5,6 +5,8 @@
 CREATE TABLE IF NOT EXISTS schools (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    domain_name VARCHAR(100) UNIQUE NOT NULL, -- Added missing column
+    full_domain VARCHAR(255), -- Added missing column
     address TEXT,
     contact_email VARCHAR(255),
     contact_phone VARCHAR(50),
