@@ -83,6 +83,29 @@ pool.query("SELECT NOW()", (err, result) => {
   }
 });
 
+// Database test endpoint for debugging
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW() as current_time');
+    client.release();
+    
+    res.json({
+      status: 'success',
+      message: 'Database connection successful',
+      timestamp: result.rows[0].current_time,
+      environment: process.env.NODE_ENV
+    });
+  } catch (error) {
+    console.error('Database test failed:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Database connection failed',
+      error: error.message
+    });
+  }
+});
+
 // 4️⃣ Default route
 app.get("/", (req, res) => {
   res.send("🎓 Welcome to AutoM8 School Management System API");
